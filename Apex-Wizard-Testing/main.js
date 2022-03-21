@@ -32,7 +32,9 @@ var gameplayScene = new Phaser.Class({
         this.load.tilemapTiledJSON('env','assets/items.json');
         this.load.image('tiles','assets/level64.png');
         this.load.image('items','assets/level32.png');
-        this.load.audio('sf', 'assets/soundefx')
+        
+        this.load.audio('sf', 'assets/explosion.mp3')
+        this.load.audio('blaster', 'assets/blaster.mp3')
 
         this.load.spritesheet('player', 'assets/New Piskel.png', { frameWidth: 32, frameHeight: 32});
         
@@ -44,6 +46,9 @@ var gameplayScene = new Phaser.Class({
     
     create: function ()
     {        
+        //sound effects code
+        //let impactsound = this.sound.add('sf');
+
         //Tilemap Code
         this.cameras.main.setBounds(0, 0, 1024, 2048);
         
@@ -322,6 +327,7 @@ var gameplayScene = new Phaser.Class({
                 if (!cursors.right.isDown && !cursors.left.isDown && !cursors.up.isDown && !cursors.down.isDown && playerProjectile.countActive() <= 5 && enemy.active)
                 {
                     var activeProjectile = playerProjectile.create(player.x + 10, player.y, "playerProjectile");
+                    this.sound.play('blaster');
                     var target = this.physics.closest(player);
                     this.physics.moveToObject(activeProjectile, enemy, 500);
                 }}, [], this);
@@ -364,7 +370,7 @@ function enemyTakeDamage (enemy, playerProjectile) {
 
     this.enemyHealth.setText(enemyHealthValue + '/100');
     this.time.delayedCall(10, function (){playerProjectile.disableBody(true, true)},[],this);
-    this.play.audio(sfx)
+    this.sound.play('sf');
 
     if (enemyHealthValue == 0) {
         enemy.disableBody(true, true);
